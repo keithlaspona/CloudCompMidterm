@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,57 +10,53 @@
 <body>
 
     <div class="container">
-
-
         <div class="box">
-
             <h1>These are your assignments.</h1>
-
             <div id="tasks"></div>
 
-
             <a href="create_task.html"><button> Create Task</button></a>
-            <button onClick="(function(){
-                window.location.replace('index.html');
-            })()"> Log Out</button>
+            <button onclick="logout()">Log Out</button>
         </div>
-        
-            
     </div>
- 
-    <script>
 
+    <script>
         function getCookie(name) {
             let cookie = {};
             document.cookie.split(';').forEach(function(el) {
                 let split = el.split('=');
                 cookie[split[0].trim()] = split.slice(1).join("=");
-            })
-            return cookie[name];
+            });
+            return cookie[name] || "";
         }
-        // Attach event listener to the form submit event
-        
 
+        function logout() {
+            document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.replace("index.html");
+        }
 
-        console.log('cookie',getCookie('username'))
-        axios.get('http://127.0.0.1:8000/get_tasks/?name='+getCookie('username'))
+        console.log("cookie", getCookie("username"));
+
+        axios.get("http://127.0.0.1:8000/get_tasks/?name=" + getCookie("username"))
         .then(function (response) {
-
-            console.log(response.data.tasks)
-            console.log(response.data.tasks.length)
-            console.log(document.cookie)
+            console.log(response.data.tasks);
 
             const container = document.getElementById("tasks");
 
-            for (let i = 0; i < response.data.tasks.length; i++) {
-                let content = "<p>"  +  response.data.tasks[i] + "</p> <br>";
-                container.innerHTML += content;
+            if (response.data.tasks.length === 0) {
+                container.innerHTML = "<p>No tasks found.</p>";
+                return;
             }
+
+            response.data.tasks.forEach(task => {
+                let content = `<p><strong>Task:</strong> ${task.task} <br>
+                               <strong>Deadline:</strong> ${task.deadline}</p><hr>`;
+                container.innerHTML += content;
+            });
         })
         .catch(function (error) {
-            console.log(error.response ? error.response.data : error.message)
+            console.log(error.response ? error.response.data : error.message);
+            document.getElementById("tasks").innerHTML = "<p>Error loading tasks.</p>";
         });
-      
     </script>
 </body>
 </html>

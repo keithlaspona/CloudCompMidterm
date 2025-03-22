@@ -10,23 +10,27 @@
 <body>
 
     <div class="container">
+
+
         <div class="box">
+
             <h1>Register</h1>
 
-            <!-- Register Form -->
+
             <form id="myForm">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br>
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required><br>
-
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required><br>
-
+                <input type="text" id="username" name="username"><br>
+                <label for="username">password:</label>
+                <input type="text" id="password" name="username"><br>
+                <label for="username">confirm password:</label>
+                <input type="text" id="password" name="username"><br>
                 <button type="submit">Register</button>
             </form>
+
+
         </div>
+        
+            
     </div>
  
     <script>
@@ -35,32 +39,21 @@
             event.preventDefault(); // Prevent form from refreshing the page
 
             const username = document.getElementById('username').value;
-            const password = document.getElementById('username').value;
-            const confirmPassword = document.getElementById('username').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
 
             const data = {
-                'username': username,
-                'password': password,
-            };
+                'username':document.getElementById('username').value,
+                'password':document.getElementById('password').value,
 
-            axios.post('http://127.0.0.1:8000/create_user/', data, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            }
+
+            axios.post('http://127.0.0.1:8000/create_user/',data)
             .then(function (response) {
-                console.log(response.data.status)
-                alert('User registered successfully!');
+
+                console.log(response.data.message)
                 console.log(data)
             })
             .catch(function (error) {
                 console.log(error.response ? error.response.data : error.message)
-                alert('An error occurred. Please try again.');
             });
         });
     </script>

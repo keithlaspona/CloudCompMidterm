@@ -10,56 +10,67 @@
 <body>
 
     <div class="container">
+
+
         <div class="box">
+
             <h1>To do list</h1>
 
-            <form id="myForm" method="post">
+
+            <form id="myForm">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="username">password:</label>
+                <input type="text" id="password" name="username"><br>
                 <button type="submit">Login</button>
             </form>
 
-                <a href="register.html"> Register</a>
+                <a href="register.html"> <button>Register</button></a>
         </div>
+        
+            
     </div>
  
     <script>
+        function getCookie(name) {
+            let cookie = {};
+            document.cookie.split(';').forEach(function(el) {
+                let split = el.split('=');
+                cookie[split[0].trim()] = split.slice(1).join("=");
+            })
+            return cookie[name];
+        }
+        document.cookie = 'username=';
+        console.log('heheh' + getCookie('username'))
+        console.log('heheh' + document.cookie)
         // Attach event listener to the form submit event
         document.getElementById('myForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent form from refreshing the page
 
             const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
 
             const data = {
-                'username': username,
-                'password': password,
-            };
+                'username':document.getElementById('username').value,
+                'password':document.getElementById('password').value,
 
-            console.log(data)
+            }
 
-            axios.post('http://127.0.0.1:8000/login/', data, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            axios.post('http://127.0.0.1:8000/login/',data)
             .then(function (response) {
-                console.log(response);
+
                 if(response.data.status == 'Logged in'){
-                    document.cookie = 'username=' + username;
+                    document.cookie = 'username=' + document.getElementById('username').value;
                     window.location.replace("main.html");
-                } else {
-                    alert('Login failed: ' + response.data.status);
                 }
+
+
+                console.log(response.data.status)
+                console.log(data)
             })
             .catch(function (error) {
                 console.log(error.response ? error.response.data : error.message)
-                alert('An error occurred. Please try again.');
             });
         });
     </script>
-    
 </body>
 </html>
